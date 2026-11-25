@@ -19,11 +19,11 @@ def list_products(
         where.append("category_id=?")
         params.append(category_id)
     if q:
-        where.append("(name LIKE ? OR description LIKE ?)")
+        where.append("(p.name LIKE ? OR p.description LIKE ?)")
         params += [f"%{q}%", f"%{q}%"]
     cond = " AND ".join(where)
     with db.get_conn() as conn:
-        total = conn.execute(f"SELECT COUNT(*) c FROM products WHERE {cond}", params).fetchone()["c"]
+        total = conn.execute(f"SELECT COUNT(*) c FROM products p WHERE {cond}", params).fetchone()["c"]
         rows = conn.execute(
             f"""SELECT p.*, c.name AS category_name FROM products p
                 LEFT JOIN categories c ON c.id=p.category_id

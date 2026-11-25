@@ -95,8 +95,10 @@ async function renderShop() {
     </div>
     <div class="grid" id="grid"><div class="empty">加载中…</div></div>`;
   try {
-    const q = state.keyword ? `&q=${encodeURIComponent(state.keyword)}` : "";
-    const data = await api(`/api/products?category_id=${state.categoryId || ""}${q}`);
+    const params = new URLSearchParams();
+    if (state.categoryId) params.set("category_id", state.categoryId);
+    if (state.keyword) params.set("q", state.keyword);
+    const data = await api(`/api/products?${params.toString()}`);
     const grid = document.getElementById("grid");
     if (!data.items.length) { grid.innerHTML = `<div class="empty">没有找到商品</div>`; return; }
     grid.innerHTML = data.items.map(p => `
